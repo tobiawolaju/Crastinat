@@ -490,7 +490,7 @@ header h1 {
     bottom: 32px;
     left: 50%;
     transform: translateX(-50%);
-    width: min(90%, 640px);
+    width: min(96%, 640px);
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-glow);
     padding: 8px;
