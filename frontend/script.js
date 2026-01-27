@@ -285,19 +285,77 @@ function setupChatInput() {
 
     input.addEventListener("input", updateIcon);
 
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && input.value.trim().length > 0) {
-            sendMessage();
+});
+
+actionBtn.addEventListener("click", () => {
+    if (!sendIcon.classList.contains("hidden")) {
+        sendMessage();
+    } else {
+        console.log("Voice input triggered (not implemented)");
+    }
+});
+}
+
+function setupZoomListeners() {
+    const timeline = document.querySelector('.timeline-container');
+    let lastTouchDistance = 0;
+
+    // Mouse Wheel Zoom (Ctrl + Wheel)
+    timeline.addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            const delta = -e.deltaY;
+            const factor = delta > 0 ? 1.1 : 0.9;
+            applyZoom(currentZoom * factor, e.clientX);
+        }
+    }, { passive: false });
+
+    // Touch Pinch Zoom
+    timeline.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            lastTouchDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
         }
     });
 
-    actionBtn.addEventListener("click", () => {
-        if (!sendIcon.classList.contains("hidden")) {
-            sendMessage();
-        } else {
-            console.log("Voice input triggered (not implemented)");
+    timeline.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const distance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+
+            const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            const factor = distance / lastTouchDistance;
+
+            applyZoom(currentZoom * factor, centerX);
+            lastTouchDistance = distance;
         }
-    });
+    }, { passive: false });
+}
+
+function applyZoom(newZoom, centerX = window.innerWidth / 2) {
+    const timeline = document.querySelector('.timeline-container');
+    const oldZoom = currentZoom;
+
+    // Clamp zoom
+    currentZoom = Math.max(CONFIG.minZoom, Math.min(CONFIG.maxZoom, newZoom));
+
+    if (oldZoom === currentZoom) return;
+
+    // Calculate mouse position relative to content to maintain focus
+    const rect = timeline.getBoundingClientRect();
+    const relativeX = centerX - rect.left + timeline.scrollLeft;
+    const ratio = currentZoom / oldZoom;
+
+    // Apply zoom to CSS
+    document.documentElement.style.setProperty('--zoom-level', currentZoom);
+
+    // Adjust scroll to keep focus point
+    timeline.scrollLeft = relativeX * ratio - (centerX - rect.left);
 }
 
 
