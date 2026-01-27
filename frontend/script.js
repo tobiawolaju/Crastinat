@@ -375,7 +375,7 @@ function layoutAndRenderActivities(activities) {
         el.style.width = `${duration * CONFIG.pixelsPerMinute}px`;
         el.style.top = `${activity.trackIndex * (trackHeight + trackGap)}px`;
 
-        let bgColor = activity.color || 'var(--accent-primary)';
+        let bgColor = activity.color || '#5865F2';
         el.style.backgroundColor = hexToRgba(bgColor, 0.15);
         el.style.borderLeft = `4px solid ${bgColor}`;
         el.style.color = 'var(--text-primary)';
