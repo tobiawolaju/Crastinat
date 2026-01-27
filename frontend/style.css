@@ -1,6 +1,7 @@
 :root {
     /* Onyx Pro Design System - Default Dark Mode */
     --bg-main: #0B0C0E;
+    --bg-main-sub: #1d1d1d;
     --bg-surface: #14161A;
     --bg-surface-elevated: #1C1F25;
     --bg-glass: rgba(20, 22, 26, 0.7);
@@ -44,6 +45,7 @@
 
 [data-theme="light"] {
     --bg-main: #F8F9FA;
+    --bg-main-sub: #e9e9e9;
     --bg-surface: #FFFFFF;
     --bg-surface-elevated: #EDF2F7;
     --bg-glass: rgba(248, 249, 250, 0.8);
@@ -420,7 +422,7 @@ header h1 {
     border-bottom: 1px solid var(--border-subtle);
     position: sticky;
     top: 0;
-    background-color: var(--bg-main);
+    background-color: var(--bg-main-sub);
     z-index: 50;
     backdrop-filter: blur(8px);
 }
