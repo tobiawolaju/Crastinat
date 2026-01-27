@@ -285,15 +285,19 @@ function setupChatInput() {
 
     input.addEventListener("input", updateIcon);
 
-});
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && input.value.trim().length > 0) {
+            sendMessage();
+        }
+    });
 
-actionBtn.addEventListener("click", () => {
-    if (!sendIcon.classList.contains("hidden")) {
-        sendMessage();
-    } else {
-        console.log("Voice input triggered (not implemented)");
-    }
-});
+    actionBtn.addEventListener("click", () => {
+        if (!sendIcon.classList.contains("hidden")) {
+            sendMessage();
+        } else {
+            console.log("Voice input triggered (not implemented)");
+        }
+    });
 }
 
 function setupZoomListeners() {
