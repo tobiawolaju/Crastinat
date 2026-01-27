@@ -10,6 +10,18 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Outfit:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'system';
+                let actualTheme = savedTheme;
+                if (savedTheme === 'system') {
+                    actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', actualTheme);
+            } catch (e) { }
+        })();
+    </script>
     <link rel="stylesheet" href="style.css">
 </head>
 
