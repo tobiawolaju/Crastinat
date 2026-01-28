@@ -661,15 +661,13 @@ header h1 {
     }
 
     .chat-input-container {
-        position: relative;
-        grid-column: 2;
-        grid-row: 2;
-        bottom: auto;
-        left: auto;
-        transform: none;
-        width: 90%;
-        margin: 0 auto;
-        padding: 8px;
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(60%, 640px);
+        grid-column: unset;
+        grid-row: unset;
     }
 }
 
