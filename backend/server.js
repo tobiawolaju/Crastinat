@@ -54,7 +54,8 @@ function normalizeAliases(args) {
         description: args.description || args.desc,
         location: args.location,
         id: args.id,
-        query: args.query
+        query: args.query,
+        tags: args.tags
     };
 }
 
@@ -124,7 +125,7 @@ function normalizeAddActivityArgs(args) {
     }
 
     if (!finalEndTime) {
-         // Fallback for edge cases
+        // Fallback for edge cases
         throw new Error(`Could not calculate end time for ${title}`);
     }
 
@@ -150,6 +151,8 @@ IMPORTANT:
 - DO NOT invent new field names
 - Map user language to these exact keys
 
+// Map "tags" -> tags (array of strings) if present.
+
 Schema:
 {
   "intent": "getSchedule" | "addActivity" | "updateActivity" | "deleteActivity" | "findHackathons" | null,
@@ -161,11 +164,12 @@ Mapping rules:
 - "activity", "task", "event" → title
 - "time", "at", "starts" → startTime
 - "for X minutes/hours" → duration
+- "with tags X, Y" or "tagged as X" → tags (array of strings)
 
 MULTIPLE TASKS:
 If the user wants to add multiple activities (e.g., "Swim at 10pm AND Read at 8am"),
 set "intent" to "addActivity" and make "arguments" an ARRAY of objects.
-Example: "arguments": [{ "title": "Swim", "time": "10pm" }, { "title": "Read", "time": "8am" }]
+Example: "arguments": [{ "title": "Swim", "time": "10pm" }, { "title": "Read", "time": "8am", "tags": ["study"] }]
 
 Rules:
 - If required fields are missing, still return best guess
@@ -231,9 +235,9 @@ app.post("/api/chat", async (req, res) => {
 
                 // Create a summary message
                 const successCount = responses.filter(r => r.success).length;
-                result = { 
+                result = {
                     message: `Added ${successCount} activity(s).`,
-                    details: responses 
+                    details: responses
                 };
                 refreshNeeded = true;
                 break;
@@ -268,9 +272,9 @@ app.post("/api/chat", async (req, res) => {
         }
 
         res.json({
-            reply: Array.isArray(rawArgs) && intent === "addActivity" 
-                   ? `Done! I've added your tasks.` 
-                   : "Done ✅",
+            reply: Array.isArray(rawArgs) && intent === "addActivity"
+                ? `Done! I've added your tasks.`
+                : "Done ✅",
             result,
             refreshNeeded
         });
@@ -290,7 +294,7 @@ app.get("/api/debug", async (_, res) => {
     try {
         const { firebaseReady } = require('./firebase-config');
         firebaseStatus = firebaseReady ? "Connected" : "Not Configured";
-    } catch(e) { firebaseStatus = "Error loading module"; }
+    } catch (e) { firebaseStatus = "Error loading module"; }
 
     const status = {
         geminiKeyPresent: !!process.env.GEMINI_API_KEY,

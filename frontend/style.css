@@ -833,3 +833,26 @@ header h1 {
     grid-template-columns: 1fr 1fr;
     gap: 16px;
 }
+
+/* Tags styling */
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.tag-chip {
+    background-color: var(--bg-surface-elevated);
+    color: var(--text-primary);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    border: 1px solid var(--border-subtle);
+}
+
+.no-tags {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.9rem;
+}

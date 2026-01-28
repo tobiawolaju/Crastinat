@@ -29,7 +29,7 @@ const tools = {
         return val ? (Array.isArray(val) ? val : Object.values(val)) : [];
     },
 
-    addActivity: async ({ title, startTime, endTime, description, location, attendees }, context) => {
+    addActivity: async ({ title, startTime, endTime, description, location, attendees, tags }, context) => {
         const { uid, accessToken } = context;
         if (!uid) return { error: "User not authenticated" };
 
@@ -52,6 +52,7 @@ const tools = {
             description: description || "",
             location: location || "",
             attendees: attendees || [],
+            tags: tags || [],
             status: "Pending",
             color: "#" + Math.floor(Math.random() * 16777215).toString(16) // Random Hex Color
         };
