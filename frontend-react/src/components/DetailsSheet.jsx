@@ -14,7 +14,17 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
         }
     }, [activity]);
 
-    if (!activity && !editData.id) return null;
+    if (!activity && !editData.id) {
+        return (
+            <div className={`details-panel ${isOpen ? 'open' : ''}`}>
+                <div className="detail-container">
+                    <p style={{ color: 'var(--text-tertiary)', textAlign: 'center', marginTop: '40vh' }}>
+                        Select an activity to view details
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     const handleSave = async () => {
         setSaveStatus('saving');

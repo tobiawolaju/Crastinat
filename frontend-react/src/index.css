@@ -588,7 +588,16 @@ header h1 {
   border-color: var(--accent-primary);
 }
 
-/* Landing Page Redesign */
+@media (max-width: 600px) {
+  .header-main h1 {
+    font-size: 1.1rem;
+  }
+}
+
+.details-panel {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-glow) transparent;
+}
 
 .landing-page {
   position: fixed;
