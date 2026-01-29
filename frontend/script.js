@@ -162,13 +162,28 @@ function renderTagsHtml(tags) {
 
 function renderDaysHtml(days) {
     if (!days || days.length === 0) return '';
-    const daysHtml = days.map(day => `<span class="tag-chip day-chip">${day}</span>`).join('');
+
+    // Sort logic to ensure predictable order
+    const order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const sortedDays = [...days].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+
+    const isDaily = order.every(d => days.includes(d)) && days.length === 7;
+    const isWeekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].every(d => days.includes(d)) && days.length === 5;
+
+    let content = "";
+    if (isDaily) {
+        content = '<span class="tag-chip day-chip">Every Day</span>';
+    } else if (isWeekdays) {
+        content = '<span class="tag-chip day-chip">Weekdays</span>';
+    } else {
+        content = sortedDays.map(day => `<span class="tag-chip day-chip">${day}</span>`).join('');
+    }
 
     return `
         <div class="detail-section">
             <h3>Active Days</h3>
             <div class="tags-list">
-                ${daysHtml}
+                ${content}
             </div>
         </div>
     `;
@@ -200,17 +215,18 @@ function renderDetails(activity) {
                 </div>
             </header>
             
+            ${activity.description ? `
             <div class="detail-section">
                 <h3>Description</h3>
-                <p>${activity.description || 'No description provided.'}</p>
-            </div>
+                <p>${activity.description}</p>
+            </div>` : ''}
             
             <div class="detail-grid">
                 <div class="detail-section">
                     <h3>Location</h3>
                     <div class="detail-value">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                        ${activity.location || 'Not specified'}
+                        ${activity.location || 'Remote / None'}
                     </div>
                 </div>
                 

@@ -531,8 +531,9 @@ header h1 {
 }
 
 .day-chip {
-    background-color: var(--accent-glow);
-    color: var(--accent-primary);
+    background-color: var(--accent-glow) !important;
+    color: var(--accent-primary) !important;
+    border: 1px solid rgba(88, 101, 242, 0.2) !important;
 }
 
 /* Form Styles */
