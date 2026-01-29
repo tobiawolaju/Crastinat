@@ -42,7 +42,7 @@ let googleAccessToken = null;
 // --- Auth Functions ---
 
 function initAuth() {
-    const signInBtn = document.getElementById('params-signin-btn');
+    const paramsSignInBtn = document.getElementById('params-signin-btn');
     const signOutBtn = document.getElementById('signout-btn');
     const userProfile = document.getElementById('user-profile');
     const userPhoto = document.getElementById('user-photo');
@@ -52,6 +52,7 @@ function initAuth() {
 
     // Sign-in function
     const handleSignIn = () => {
+        const provider = new firebase.auth.GoogleAuthProvider(); // Provider moved inside
         auth.signInWithPopup(provider).then((result) => {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const credential = result.credential;
@@ -72,8 +73,8 @@ function initAuth() {
         }
     });
 
-    signInBtn.addEventListener('click', handleSignIn);
-    heroSignInBtn.addEventListener('click', handleSignIn);
+    if (paramsSignInBtn) paramsSignInBtn.addEventListener('click', handleSignIn);
+    if (heroSignInBtn) heroSignInBtn.addEventListener('click', handleSignIn);
 
     signOutBtn.addEventListener('click', () => {
         auth.signOut().then(() => {
@@ -90,7 +91,7 @@ function initAuth() {
             appContainer.style.display = 'flex';
 
             // UI Updates
-            signInBtn.classList.add('hidden');
+            paramsSignInBtn.classList.add('hidden');
             userProfile.classList.remove('hidden');
             userPhoto.src = user.photoURL;
 
@@ -102,7 +103,7 @@ function initAuth() {
             appContainer.style.display = 'none';
 
             // UI Updates
-            signInBtn.classList.remove('hidden');
+            paramsSignInBtn.classList.remove('hidden');
             userProfile.classList.add('hidden');
 
             // Clear Data
@@ -409,56 +410,62 @@ function init() {
 
 
 function setupChatInput() {
-    const input = document.getElementById('chat-input');
+    const chatInput = document.getElementById('chat-input');
     const actionBtn = document.getElementById('action-btn');
     const micIcon = actionBtn.querySelector('.icon-mic');
     const sendIcon = actionBtn.querySelector('.icon-send');
 
-    // Toggle send/mic icon based on input
-    function updateIcon() {
-        if (input.value.trim().length > 0) {
+    // Handle Input & Icon Toggling
+    chatInput.addEventListener('input', () => {
+        // Auto-resize textarea
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + 'px';
+
+        if (chatInput.value.trim().length > 0) {
             micIcon.classList.add('hidden');
             sendIcon.classList.remove('hidden');
-            actionBtn.setAttribute('aria-label', 'Send message');
         } else {
-            sendIcon.classList.add('hidden');
             micIcon.classList.remove('hidden');
-            actionBtn.setAttribute('aria-label', 'Voice input');
+            sendIcon.classList.add('hidden');
         }
-    }
+    });
 
-    async function sendMessage() {
-        if (!currentUser) {
-            alert("Please sign in to use the AI assistant.");
+    // Handle Action Button Click (Mic or Send)
+    actionBtn.addEventListener('click', () => {
+        if (chatInput.value.trim().length > 0) {
+            handleChatSubmit();
+        } else {
+            startVoiceInput();
+        }
+    });
+
+    async function handleChatSubmit() {
+        const message = chatInput.value.trim();
+        if (!message || !currentUser) {
+            if (!currentUser) alert("Please sign in to use the AI assistant.");
             return;
         }
 
-        const message = input.value.trim();
-        if (!message) return;
+        // Reset UI immediately
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        micIcon.classList.remove('hidden');
+        sendIcon.classList.add('hidden');
 
-        console.log("Sending message:", message);
-        input.value = '';
-        updateIcon();
-
-        const originalPlaceholder = input.placeholder;
-        input.placeholder = "Thinking...";
-        input.disabled = true;
+        const originalPlaceholder = chatInput.placeholder;
+        chatInput.placeholder = "Thinking...";
+        chatInput.disabled = true;
 
         try {
-            // Get current Firebase ID token
-            const idToken = await currentUser.getIdToken();
-
             const response = await fetch("https://to-do-iun8.onrender.com/api/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     message,
-                    userId: currentUser.uid,   // <-- required by backend
+                    userId: currentUser.uid,
                     accessToken: googleAccessToken || null
                 })
             });
-
-
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
@@ -468,40 +475,31 @@ function setupChatInput() {
             }
 
             const data = await response.json();
-            console.log("AI Reply:", data.reply);
-
-            // Show AI reply
             if (data.reply) {
+                // In a real OpenAI style app, we might want a toast or a floating notification
                 alert("AI: " + data.reply);
-            } else {
-                alert("AI returned no message.");
             }
-
         } catch (error) {
             console.error("Error communicating with AI:", error);
-            alert("Error communicating with AI Assistant. Make sure backend is running.");
+            alert("Error communicating with AI Assistant.");
         } finally {
-            input.placeholder = originalPlaceholder;
-            input.disabled = false;
-            input.focus();
+            chatInput.placeholder = originalPlaceholder;
+            chatInput.disabled = false;
+            chatInput.focus();
         }
     }
 
-    input.addEventListener("input", updateIcon);
-
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && input.value.trim().length > 0) {
-            sendMessage();
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleChatSubmit();
         }
     });
+}
 
-    actionBtn.addEventListener("click", () => {
-        if (!sendIcon.classList.contains("hidden")) {
-            sendMessage();
-        } else {
-            console.log("Voice input triggered (not implemented)");
-        }
-    });
+function startVoiceInput() {
+    console.log("Voice input triggered (not implemented)");
+    alert("Voice input is not implemented yet.");
 }
 
 function setupZoomListeners() {
