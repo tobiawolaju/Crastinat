@@ -206,12 +206,12 @@ function renderDetails(activity) {
         <div class="detail-container">
             <header class="detail-header">
                 <div class="detail-title-row">
-                    <h2>${activity.title}</h2>
                     <span class="status-chip" style="background-color: ${hexToRgba(statusColor, 0.1)}; color: ${statusColor}; border: 1px solid ${hexToRgba(statusColor, 0.2)}">${activity.status || 'Scheduled'}</span>
+                    <h2>${activity.title}</h2>
                 </div>
                 <div class="detail-time">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    ${activity.startTime} — ${activity.endTime}
+                    ${activity.startTime} to ${activity.endTime}
                 </div>
             </header>
             
