@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { database } from './firebase-config';
+import { database } from '../firebase-config';
 import { ref, onValue } from 'firebase/database';
 
 export function useSchedule(userId) {
