@@ -7,7 +7,9 @@ export default function LandingPage({ onLogin }) {
                 {/* Hero Section */}
                 <section className="landing-section">
                     <div className="hero-badge fade-in-up">AI-Powered Planning</div>
-
+                    <h1 className="fade-in-up" style={{ animationDelay: '0.1s' }}>
+                        Your Life,<br />On a Timeline.
+                    </h1>
                     <p className="fade-in-up" style={{ animationDelay: '0.2s' }}>
                         A minimalist command center for your day. Powered by AI, designed for clarity.
                     </p>
@@ -27,7 +29,19 @@ export default function LandingPage({ onLogin }) {
                     </div>
                 </section>
 
+                {/* Features Section */}
+                <section className="landing-section">
+                    <div className="hero-badge">Seamless Flow</div>
+                    <h2>Design your day.</h2>
+                    <p>Natural language interaction meets a visual timeline. Just type what you want to do, and watch your schedule assemble itself.</p>
 
+                    <div className="feature-visual">
+                        <div className="preview-track">
+                            <div className="preview-block" style={{ left: '20%', width: '30%' }}></div>
+                            <div className="preview-block" style={{ left: '55%', width: '15%', opacity: 0.6 }}></div>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Final CTA Section */}
                 <section className="landing-section signin-section">
