@@ -1,85 +1,115 @@
-# To-Do Timeline App with AI & Google Calendar Integration
+# Crastinat
 
-A smart daily planner application that uses AI to manage your schedule, syncs with Google Calendar, and persists data using Firebase Realtime Database.
+**Stop delaying. Start living.**
 
-## Architecture
+> *If it’s not on the timeline, it doesn’t exist.*
 
-```mermaid
-graph TD
-    subgraph Client ["Frontend (Vite)"]
-        UI[User Interface]
-        AuthSDK[Firebase Auth SDK]
-        DBSDK[Firebase Realtime DB SDK]
-    end
+Crastinat is a **personal time editor** built to turn intention into reality. It helps you beat procrastination, manage opportunities, and organize your life by **visualizing time as a timeline** you can edit, reorder, and commit to.
 
-    subgraph Server ["Backend (Node/Express)"]
-        API[API Endpoint /api/chat]
-        Gemini[Gemini AI Client]
-        Tools[Tool Definitions]
-        FBAdmin[Firebase Admin SDK]
-    end
+---
 
-    subgraph Cloud ["Google Cloud & Firebase"]
-        FirebaseAuth[Firebase Authentication]
-        RTDB[(Realtime Database)]
-        GeminiAPI[Gemini Pro API]
-        GCalAPI[Google Calendar API]
-    end
+## Why Crastinat exists
 
-    %% User Interaction
-    User((User)) -->|Interacts| UI
-    UI -->|Google Sign-In| AuthSDK
-    AuthSDK -->|Verify Creds| FirebaseAuth
-    
-    %% Realtime Data Sync
-    UI -->|Listen for Changes| DBSDK
-    DBSDK <-->|Sync Schedule| RTDB
+Procrastination isn’t laziness — it’s the **gap between plans and reality**.
+Most tools let you plan. Crastinat makes plans **happen**.
 
-    %% Chat & AI Flow
-    UI -->|Send Command + Tokens| API
-    API -->|Verify ID Token| FBAdmin
-    FBAdmin -->|Check Token| FirebaseAuth
-    
-    API -->|Prompt| Gemini
-    Gemini -->|Process| GeminiAPI
-    GeminiAPI -->|Function Call| Tools
-    
-    %% Tool Execution
-    Tools -->|Read/Write| RTDB
-    Tools -->|Sync Events| GCalAPI
-    
-    %% Response
-    Tools -->|Result| API
-    API -->|AI Reply| UI
+* Turn scattered ideas into a 24-hour timeline
+* See your day, week, or month at a glance
+* Remove friction from decisions
+* Turn goals into actual, lived time
+
+---
+
+## How it works
+
+### 1. Timeline-first interface
+
+* 24-hour horizontal timeline
+* Drag, resize, split, and reorder time blocks
+* Visual overview of your entire day
+
+### 2. Chat-based planning
+
+Type naturally:
+
+```
+I’m swimming on weekends at 5pm for 3 hours
 ```
 
-## Features
+Crastinat:
 
--   **Timeline Visualization**: Horizontal scrolling timeline for daily activities.
--   **AI Assistant**: Chat with Gemini to add, update, or remove events using natural language (e.g., "Schedule lunch at 12pm").
--   **Google Calendar Sync**: Events added via the app appear in your Google Calendar and vice versa.
--   **Realtime Updates**: Changes reflect instantly across devices using Firebase.
--   **Secure Authentication**: Google Sign-In via Firebase Auth.
+* Understands intent
+* Places it correctly on the timeline
+* Sets reminders
+* Syncs with Google Calendar
 
-## Setup Instructions
+### 3. Edit your life
 
-### Prerequisites
-- Node.js installed
-- Google Cloud Project with Calendar API enabled
-- Firebase Project with Auth & Realtime Database enabled
+* Drag & drop events
+* Adjust durations visually
+* Reorder priorities instantly
 
-### Live Deployment
-The backend is deployed on Render: [https://to-do-iun8.onrender.com](https://to-do-iun8.onrender.com)
-The frontend is configured to point to this URL in `frontend/script.js`.
+### 4. Optional tagging & sharing
 
-### Installation & Local Development
+* Tag blocks (#work, #study, #health)
+* Collaboration is optional — Crastinat is **personal first**
 
-1.  **Clone the repository**
-2.  **Using Yarn**:
-    The project is configured to use **Yarn**. 
-    - In `backend/`: Run `yarn install` and `yarn start`.
-    - In `frontend/`: Run `yarn install` and `yarn dev`.
+---
 
-3.  **Environment Variables**:
-    - **Backend**: Create `.env` with `GEMINI_API_KEY`. Render uses "Secret Files" for `serviceAccountKey.json`.
-    - **Frontend**: Configure `firebaseConfig` in `script.js`.
+## What Crastinat is **not**
+
+* ❌ A to-do list
+* ❌ A habit tracker
+* ❌ A motivational app
+* ❌ A note-taking tool
+
+Crastinat doesn’t ask *what you want to do*. It asks *when it will actually happen*.
+
+---
+
+## Philosophy
+
+> **If it’s not on the timeline, it doesn’t exist.**
+
+* Anything not in Crastinat is optional.
+* Anything in Crastinat is real.
+* Time is your most valuable asset — treat it like footage to edit.
+
+---
+
+## Use Cases
+
+* Personal life planning
+* Opportunity management
+* Beating procrastination
+* Daily/weekly scheduling
+* Turning goals into executed reality
+
+---
+
+## Roadmap (high level)
+
+* [x] AI-powered natural language to timeline parsing
+* [ ] Conflict detection & visual warnings
+* [ ] Playback mode (scrub through your day/week)
+* [ ] Smart suggestions based on past timelines
+* [ ] Offline-first mode
+
+---
+
+## Technical Architecture
+
+For technical details, setup instructions, and architecture diagrams, please refer to [architecture.md](./architecture.md).
+
+---
+
+## Status
+
+Crastinat is actively being built to solve a **real personal problem**:
+turning intention into lived time over a 6-month transformation.
+
+---
+
+## License
+
+MIT

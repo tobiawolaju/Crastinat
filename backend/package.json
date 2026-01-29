@@ -1,7 +1,7 @@
 {
-    "name": "todo-backend",
+    "name": "crastinat-backend",
     "version": "1.0.0",
-    "description": "Backend for To-Do App with Gemini Integration",
+    "description": "Backend for Crastinat App with Gemini Integration",
     "main": "server.js",
     "scripts": {
         "start": "node server.js"

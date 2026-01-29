@@ -10,7 +10,7 @@ export default function Header({ user, onLogout, onProfileClick }) {
     return (
         <header>
             <div className="header-main">
-                <h1>knacable</h1>
+                <h1>Crastinat</h1>
                 <p id="current-date" className="hidden-mobile">{currentDate}</p>
             </div>
             <div id="auth-container">
