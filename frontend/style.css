@@ -399,8 +399,9 @@ header h1 {
     /* Massive top padding for absolute safety */
     height: 100vh;
     /* More room */
-    overflow-y: hidden;
+    overflow-y: auto;
     box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.7);
+    border: none;
 }
 
 /* Sheet Handle for better framing */
@@ -415,10 +416,12 @@ header h1 {
     background: var(--border-subtle);
     border-radius: var(--radius-pill);
     opacity: 0.6;
+    border: none;
 }
 
 .details-panel.open {
     transform: translateY(0);
+    border: none;
 }
 
 .details-panel-overlay {
@@ -430,11 +433,13 @@ header h1 {
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s var(--ease-standard);
+    border: none;
 }
 
 .details-panel-overlay.active {
     opacity: 1;
     visibility: visible;
+    border: none;
 }
 
 /* Detail Content Refinement */
@@ -443,6 +448,7 @@ header h1 {
     margin: 0 auto;
     padding-top: 16px;
     /* Increased from 12px */
+    border: none;
 }
 
 .detail-header {
@@ -649,10 +655,12 @@ header h1 {
         border-radius: 0;
         box-shadow: none;
         padding-top: 40px;
+        border: none;
     }
 
     .details-panel-overlay {
         display: none !important;
+        border: none;
     }
 
     .chat-input-container {
