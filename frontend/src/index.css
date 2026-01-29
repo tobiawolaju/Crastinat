@@ -63,7 +63,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Syne', 'Outfit', sans-serif;
   background-color: var(--bg-main);
   color: var(--text-primary);
   line-height: 1.5;
@@ -76,9 +76,9 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: 'Playfair Display', 'Outfit', serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
 
 .hidden {
@@ -618,11 +618,37 @@ header h1 {
   transition: opacity 0.5s var(--ease-standard);
 }
 
+/* Atmospheric gradient background */
+.landing-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(120, 119, 198, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(255, 119, 115, 0.1), transparent),
+    radial-gradient(ellipse 50% 80% at 50% 100%, rgba(59, 130, 246, 0.08), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle noise texture overlay */
+.landing-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .landing-scroll-container {
   height: 100vh;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scrollbar-width: none;
+  position: relative;
+  z-index: 2;
 }
 
 .landing-scroll-container::-webkit-scrollbar {
@@ -639,18 +665,64 @@ header h1 {
   justify-content: center;
   align-items: center;
   padding: 0 40px;
+  position: relative;
 }
 
-.landing-section h1 {
-  font-size: clamp(5rem, 13vw, 10rem);
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -3px;
+/* Brand title with italic serif elegance */
+.landing-section h1,
+.brand-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 900;
+  font-style: italic;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
   text-align: center;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--text-primary) 0%, rgba(255, 255, 255, 0.7) 50%, var(--text-primary) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.landing-section h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
+/* Brand tagline with refined typography */
+.brand-tagline {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.375rem);
+  color: var(--text-secondary);
+  max-width: 500px;
+  text-align: center;
+  margin-top: 32px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
 .landing-section p {
+  font-family: 'Syne', sans-serif;
   font-size: clamp(1.125rem, 2vw, 1.5rem);
   color: var(--text-secondary);
   max-width: 600px;
@@ -659,20 +731,57 @@ header h1 {
 }
 
 .hero-badge {
-  padding: 8px 16px;
-  background: var(--bg-surface-elevated);
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-pill);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--accent-primary);
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary);
   text-transform: uppercase;
   margin-bottom: 24px;
+  backdrop-filter: blur(8px);
 }
 
 .hero-cta {
-  padding: 16px 32px;
-  font-size: 1.125rem;
+  padding: 18px 40px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-pill);
+  background: var(--text-primary);
+  color: var(--bg-main);
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.hero-cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.hero-cta:hover::before {
+  transform: translateX(100%);
+}
+
+/* Sign-in section styling */
+.signin-section {
+  gap: 32px;
 }
 
 /* Animations */
@@ -782,14 +891,26 @@ header h1 {
 }
 
 @media (max-width: 768px) {
-  .landing-section h1 {
-    font-size: 5rem;
+
+  .landing-section h1,
+  .brand-title {
+    font-size: clamp(3.5rem, 18vw, 5rem);
+    letter-spacing: -0.03em;
   }
 
   .landing-section h2 {
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 8vw, 3rem);
   }
 
+  .brand-tagline {
+    font-size: 1rem;
+    padding: 0 16px;
+  }
+
+  .hero-cta {
+    padding: 16px 32px;
+    font-size: 0.9375rem;
+  }
 
   .chat-input-container.hidden-mobile {
     transform: translate(-50%, 100px);
