@@ -14,7 +14,7 @@ export default function ActivityBlock({ activity, onClick }) {
     const style = {
         left: `calc(${start} * var(--pixels-per-minute))`,
         width: `calc(${duration} * var(--pixels-per-minute))`,
-        top: `${activity.trackIndex * (80 + 16)}px`,
+        top: `calc(${activity.trackIndex} * var(--grid-track-total))`,
         backgroundColor: hexToRgba(activity.color || '#3b82f6', 0.15),
         borderLeft: `4px solid ${activity.color || '#3b82f6'}`,
         color: 'var(--text-primary)'

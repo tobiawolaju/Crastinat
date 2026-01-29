@@ -21,8 +21,9 @@
   --hour-width: calc(var(--base-hour-width) * var(--zoom-level));
   --pixels-per-minute: calc(var(--hour-width) / 60);
   --header-height: 64px;
-  --track-height: 72px;
-  --track-gap: 12px;
+  --track-height: 80px;
+  --track-gap: 16px;
+  --grid-track-total: calc(var(--track-height) + var(--track-gap));
 
   /* Radius & Spacing */
   --radius-s: 8px;
@@ -246,9 +247,9 @@ header h1 {
   position: relative;
   min-height: 100%;
   /* Grid-like background for a technical look */
-  background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px),
+  background-image: linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
-  background-size: 100% var(--track-height), var(--hour-width) 100%;
+  background-size: 100% var(--grid-track-total), var(--hour-width) 100%;
 }
 
 .activity-block {
