@@ -15,7 +15,12 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
     if (!activity && !editData.id) return null;
 
     const handleSave = () => {
-        onSave(editData);
+        const updatedData = {
+            ...editData,
+            tags: typeof editData.tags === 'string' ? editData.tags.split(',').map(t => t.trim()).filter(t => t) : editData.tags,
+            days: typeof editData.days === 'string' ? editData.days.split(',').map(t => t.trim()).filter(t => t) : editData.days
+        };
+        onSave(updatedData);
         setIsEditing(false);
     };
 
@@ -31,10 +36,43 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
 
     const hexToRgba = (hex, alpha) => {
         if (!hex || hex[0] !== '#') return hex;
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
+        let r = 0, g = 0, b = 0;
+        if (hex.length === 4) {
+            r = parseInt(hex[1] + hex[1], 16);
+            g = parseInt(hex[2] + hex[2], 16);
+            b = parseInt(hex[3] + hex[3], 16);
+        } else {
+            r = parseInt(hex.slice(1, 3), 16);
+            g = parseInt(hex.slice(3, 5), 16);
+            b = parseInt(hex.slice(5, 7), 16);
+        }
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    const renderDays = (days) => {
+        if (!days || days.length === 0) return null;
+        const order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        const sortedDays = [...days].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+
+        const isDaily = order.every(d => days.includes(d)) && days.length === 7;
+        const isWeekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].every(d => days.includes(d)) && days.length === 5;
+
+        let label = "";
+        if (isDaily) label = "Every Day";
+        else if (isWeekdays) label = "Weekdays";
+
+        return (
+            <div className="detail-section">
+                <h3>Active Days</h3>
+                <div className="tags-list">
+                    {label ? (
+                        <span className="tag-chip day-chip">{label}</span>
+                    ) : (
+                        sortedDays.map(day => <span key={day} className="tag-chip day-chip">{day}</span>)
+                    )}
+                </div>
+            </div>
+        );
     };
 
     const renderView = () => {
@@ -77,7 +115,18 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
                             {activity.location || 'Remote / None'}
                         </div>
                     </div>
+
+                    {activity.tags && activity.tags.length > 0 && (
+                        <div className="detail-section">
+                            <h3>Tags</h3>
+                            <div className="tags-list">
+                                {activity.tags.map(tag => <span key={tag} className="tag-chip">{tag}</span>)}
+                            </div>
+                        </div>
+                    )}
                 </div>
+
+                {renderDays(activity.days)}
 
                 <div className="detail-actions">
                     <button className="action-button primary" onClick={() => setIsEditing(true)}>Edit Details</button>
@@ -113,6 +162,21 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
             <div className="form-group">
                 <label>Location</label>
                 <input type="text" value={editData.location || ''} onChange={e => setEditData({ ...editData, location: e.target.value })} />
+            </div>
+
+            <div className="form-group">
+                <label>Tags (comma separated)</label>
+                <input type="text" value={Array.isArray(editData.tags) ? editData.tags.join(', ') : (editData.tags || '')} onChange={e => setEditData({ ...editData, tags: e.target.value })} />
+            </div>
+
+            <div className="form-group">
+                <label>Recurrence Days (comma separated)</label>
+                <input type="text" value={Array.isArray(editData.days) ? editData.days.join(', ') : (editData.days || '')} onChange={e => setEditData({ ...editData, days: e.target.value })} />
+            </div>
+
+            <div className="form-group">
+                <label>Notes / Description</label>
+                <textarea value={editData.description || ''} onChange={e => setEditData({ ...editData, description: e.target.value })} style={{ minHeight: '100px' }} />
             </div>
 
             <div className="detail-actions">

@@ -7,7 +7,7 @@ import { useSchedule } from '../hooks/useSchedule';
 import { database } from '../firebase-config';
 import { ref, update, remove } from 'firebase/database';
 
-export default function Dashboard({ user, onLogout, accessToken }) {
+export default function Dashboard({ user, onLogout, accessToken, onNavigateToProfile }) {
     const { activities, loading: scheduleLoading } = useSchedule(user?.uid);
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -75,7 +75,7 @@ export default function Dashboard({ user, onLogout, accessToken }) {
 
     return (
         <div className="app-container">
-            <Header user={user} onLogout={onLogout} />
+            <Header user={user} onLogout={onLogout} onProfileClick={onNavigateToProfile} />
             <main className="main-content">
                 <Timeline
                     activities={activities}
