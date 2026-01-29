@@ -202,51 +202,53 @@ function renderDetails(activity) {
     };
     const statusColor = statusColors[activity.status] || '#999';
 
-    panel.innerHTML = `
-        <div class="detail-container">
-            <header class="detail-header">
-                <div class="detail-title-row">
-                    <span class="status-chip" style="background-color: ${hexToRgba(statusColor, 0.1)}; color: ${statusColor}; border: 1px solid ${hexToRgba(statusColor, 0.2)}">${activity.status || 'Scheduled'}</span>
-                    <h2>${activity.title}</h2>
-                </div>
-                <div class="detail-time">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    ${activity.startTime} to ${activity.endTime}
-                </div>
-            </header>
-            
-            ${activity.description ? `
+    <div class="detail-container">
+        <button class="close-panel-btn" id="close-details-btn" aria-label="Close details">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <header class="detail-header">
+            <div class="detail-title-row">
+                <span class="status-chip" style="background-color: ${hexToRgba(statusColor, 0.1)}; color: ${statusColor}; border: 1px solid ${hexToRgba(statusColor, 0.2)}">${activity.status || 'Scheduled'}</span>
+                <h2>${activity.title}</h2>
+            </div>
+            <div class="detail-time">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                ${activity.startTime} to ${activity.endTime}
+            </div>
+        </header>
+
+        ${activity.description ? `
             <div class="detail-section">
                 <h3>Description</h3>
                 <p>${activity.description}</p>
             </div>` : ''}
-            
-            <div class="detail-grid">
-                <div class="detail-section">
-                    <h3>Location</h3>
-                    <div class="detail-value">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                        ${activity.location || 'Remote / None'}
-                    </div>
+
+        <div class="detail-grid">
+            <div class="detail-section">
+                <h3>Location</h3>
+                <div class="detail-value">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    ${activity.location || 'Remote / None'}
                 </div>
-                
-                ${activity.attendees?.length > 0 ? `
+            </div>
+
+            ${activity.attendees?.length > 0 ? `
                 <div class="detail-section">
                     <h3>Attendees</h3>
                     <div class="tags-list">
                         ${activity.attendees.map(name => `<span class="tag-chip">${name}</span>`).join('')}
                     </div>
                 </div>` : ''}
-            </div>
-
-            ${renderTagsHtml(activity.tags)}
-            ${renderDaysHtml(activity.days)}
-
-            <div class="detail-actions">
-                <button class="action-button primary" id="edit-btn">Edit Details</button>
-                <button class="action-button secondary" id="delete-btn">Delete</button>
-            </div>
         </div>
+
+        ${renderTagsHtml(activity.tags)}
+        ${renderDaysHtml(activity.days)}
+
+        <div class="detail-actions">
+            <button class="action-button primary" id="edit-btn">Edit Details</button>
+            <button class="action-button secondary" id="delete-btn">Delete</button>
+        </div>
+    </div>
     `;
 
     // Button Listeners
@@ -260,6 +262,8 @@ function renderDetails(activity) {
         editActivity(activity);
     });
 
+    panel.querySelector('#close-details-btn').addEventListener('click', closeDetails);
+
     // Open sheet on mobile
     panel.classList.add('open');
     overlay.classList.add('active');
@@ -269,7 +273,7 @@ function renderDetails(activity) {
 function editActivity(activity) {
     const panel = document.getElementById('details-panel');
     panel.innerHTML = `
-        <div class="detail-container edit-container">
+        < div class="detail-container edit-container" >
             <header class="detail-header">
                 <h2>Edit Activity</h2>
                 <p style="color: var(--text-tertiary); font-size: 0.875rem;">Modify the details of your scheduled activity.</p>
@@ -315,8 +319,8 @@ function editActivity(activity) {
                 <button class="action-button primary" id="save-edit">Save Changes</button>
                 <button class="action-button secondary" id="cancel-edit">Cancel</button>
             </div>
-        </div>
-    `;
+        </div >
+        `;
 
     document.getElementById('cancel-edit').addEventListener('click', () => {
         renderDetails(activity);
@@ -628,7 +632,7 @@ function parseTime(timeStr) {
 function formatTime(minutes) {
     const h = Math.floor(minutes / 60);
     const m = minutes % 60;
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    return `${ String(h).padStart(2, '0') }:${ String(m).padStart(2, '0') } `;
 }
 
 function renderTimeRuler() {
@@ -638,7 +642,7 @@ function renderTimeRuler() {
     for (let i = CONFIG.startHour; i < CONFIG.endHour; i++) {
         const marker = document.createElement('div');
         marker.className = 'time-marker';
-        marker.textContent = `${String(i).padStart(2, '0')}:00`;
+        marker.textContent = `${ String(i).padStart(2, '0') }:00`;
         ruler.appendChild(marker);
     }
 }
@@ -687,28 +691,28 @@ function layoutAndRenderActivities(activities) {
     const trackHeight = 80; // Match CSS
     const trackGap = 16;  // Match CSS
 
-    container.style.height = `${tracks.length * (trackHeight + trackGap)}px`;
+    container.style.height = `${ tracks.length * (trackHeight + trackGap) } px`;
 
     sorted.forEach(activity => {
         const el = document.createElement('div');
         el.className = 'activity-block';
         el.innerHTML = `
-    <div class="activity-title">${activity.title}</div>
-        <div class="activity-time">${activity.startTime} - ${activity.endTime}</div>
-`;
+        < div class="activity-title" > ${ activity.title }</div >
+            <div class="activity-time">${activity.startTime} - ${activity.endTime}</div>
+    `;
 
         const start = parseTime(activity.startTime);
         const end = parseTime(activity.endTime);
         const duration = end - start;
 
         // Use CSS variables for time-based positioning
-        el.style.left = `calc(${start} * var(--pixels-per-minute))`;
-        el.style.width = `calc(${duration} * var(--pixels-per-minute))`;
-        el.style.top = `${activity.trackIndex * (80 + 16)}px`; // 80 is trackHeight, 16 is trackGap
+        el.style.left = `calc(${ start } * var(--pixels - per - minute))`;
+        el.style.width = `calc(${ duration } * var(--pixels - per - minute))`;
+        el.style.top = `${ activity.trackIndex * (80 + 16) } px`; // 80 is trackHeight, 16 is trackGap
 
         let bgColor = activity.color || '#5865F2';
         el.style.backgroundColor = hexToRgba(bgColor, 0.15);
-        el.style.borderLeft = `4px solid ${bgColor}`;
+        el.style.borderLeft = `4px solid ${ bgColor } `;
         el.style.color = 'var(--text-primary)';
 
 
@@ -740,7 +744,7 @@ function setupCurrentTimeIndicator() {
     function update() {
         const now = new Date();
         const minutes = now.getHours() * 60 + now.getMinutes();
-        indicator.style.left = `calc(${minutes} * var(--pixels-per-minute))`;
+        indicator.style.left = `calc(${ minutes } * var(--pixels - per - minute))`;
         requestAnimationFrame(update);
     }
     update();
