@@ -204,7 +204,7 @@ header h1 {
 .timeline-container {
   flex: 1;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   position: relative;
   background: var(--bg-main);
   overscroll-behavior: none;
@@ -247,7 +247,7 @@ header h1 {
 .tracks-container {
   padding: 0;
   position: relative;
-  height: calc(100% - 48px);
+  min-height: calc(100% - 48px);
   /* Account for time-ruler height */
   /* Grid-like background for a technical look */
   background-image: linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
