@@ -605,18 +605,6 @@ header h1 {
   border-top: 1px solid var(--border-visible);
 }
 
-.details-panel::before {
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 4px;
-  background: var(--text-ghost);
-  border-radius: var(--radius-pill);
-}
-
 .details-panel.open {
   transform: translateY(0);
 }
