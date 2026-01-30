@@ -54,6 +54,7 @@ export default function Timeline({ activities, onSelectActivity }) {
     const targetZoomRef = useRef(1.0);
     const animatingRef = useRef(false);
     const scrollCenterRef = useRef({ clientX: 0, relativeX: 0 });
+    const lastTouchDistanceRef = useRef(0);
 
     // --- INITIAL SCROLL ---
     useLayoutEffect(() => {
