@@ -183,45 +183,46 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
                     <X size={20} />
                 </button>
 
-                <header className="detail-header">
-                    <div className="detail-title-row">
+                <header className="detail-header" style={{ marginBottom: '24px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <h2 style={{ fontSize: '20px', margin: 0 }}>{activity.title}</h2>
                         <span
                             className="status-chip"
                             style={{
-                                backgroundColor: hexToRgba(statusColor, 0.12),
+                                backgroundColor: hexToRgba(statusColor, 0.1),
                                 color: statusColor,
-                                border: `1px solid ${hexToRgba(statusColor, 0.25)}`
+                                border: `1px solid ${hexToRgba(statusColor, 0.2)}`,
+                                flexShrink: 0
                             }}
                         >
                             {activity.status || 'Scheduled'}
                         </span>
-                        <h2>{activity.title}</h2>
                     </div>
-                    <div className="detail-time">
-                        <Clock size={16} />
-                        <span>{activity.startTime} — {activity.endTime}</span>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                        <div className="detail-time">
+                            <Clock size={16} />
+                            <span>{activity.startTime} — {activity.endTime}</span>
+                        </div>
+                        {activity.location && (
+                            <div className="detail-value">
+                                <MapPin size={16} />
+                                <span>{activity.location}</span>
+                            </div>
+                        )}
                     </div>
                 </header>
 
                 {activity.description && (
-                    <div className="detail-section">
-                        <h3>Description</h3>
-                        <p>{activity.description}</p>
+                    <div className="detail-section" style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '20px' }}>
+                        <p style={{ margin: 0, color: 'var(--text-primary)' }}>{activity.description}</p>
                     </div>
                 )}
 
-                <div className="detail-grid">
-                    <div className="detail-section">
-                        <h3>Location</h3>
-                        <div className="detail-value">
-                            <MapPin size={16} />
-                            <span>{activity.location || 'Not specified'}</span>
-                        </div>
-                    </div>
-
+                <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {activity.tags && activity.tags.length > 0 && (
-                        <div className="detail-section">
-                            <h3>Tags</h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, width: '60px' }}>Tags</span>
                             <div className="tags-list">
                                 {activity.tags.map(tag => (
                                     <span key={tag} className="tag-chip">{tag}</span>
@@ -229,20 +230,29 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
                             </div>
                         </div>
                     )}
-                </div>
 
-                {renderDays(activity.days)}
+                    {activity.days && activity.days.length > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, width: '60px' }}>Repeats</span>
+                            <div className="tags-list">
+                                {renderDays(activity.days)}
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 <div className="detail-actions">
                     <button
                         className="action-button primary"
                         onClick={() => setIsEditing(true)}
+                        style={{ flex: 1 }}
                     >
                         Edit
                     </button>
                     <button
                         className="action-button secondary"
                         onClick={() => onDelete(activity.id)}
+                        style={{ flex: 1 }}
                     >
                         Delete
                     </button>
@@ -362,11 +372,10 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
         </div>
     );
 
-    // Calculate panel style with drag offset
+    // Calculate panel style - only apply inline transform when dragging
+    // valid CSS classes handle the open/closed states responsively
     const panelStyle = {
-        transform: isOpen
-            ? `translateY(${dragY}px)`
-            : 'translateY(100%)',
+        transform: isDragging ? `translateY(${dragY}px)` : undefined,
         transition: isDragging ? 'none' : undefined
     };
 
@@ -388,28 +397,24 @@ export default function DetailsSheet({ activity, isOpen, onClose, onSave, onDele
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
             >
-                {/* Drag handle indicator */}
+                {/* Drag handle - visible only on mobile via CSS */}
                 <div
                     className="drag-handle"
                     style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: '48px',
+                        width: '100%',
+                        height: '24px',
                         display: 'flex',
-                        alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'grab',
+                        marginBottom: '12px',
                         touchAction: 'none'
                     }}
                 >
                     <div style={{
-                        width: '40px',
+                        width: '32px',
                         height: '4px',
-                        background: 'var(--text-ghost)',
+                        background: 'var(--border-light)',
                         borderRadius: '2px',
-                        marginTop: '12px'
                     }} />
                 </div>
                 {isEditing ? renderEdit() : renderView()}
