@@ -21,9 +21,9 @@ app.use(express.json());
 // Activity Management Routes (Direct)
 // --------------------
 app.post("/api/activities/update", async (req, res) => {
-    const { id, updates, userId, accessToken } = req.body;
+    const { id, updates, userId, accessToken, timeZone } = req.body;
     try {
-        const result = await tools.updateActivity({ id, ...updates }, { uid: userId, accessToken });
+        const result = await tools.updateActivity({ id, ...updates }, { uid: userId, accessToken, timeZone });
         res.json(result);
     } catch (err) {
         console.error("Update error:", err);
@@ -32,9 +32,9 @@ app.post("/api/activities/update", async (req, res) => {
 });
 
 app.post("/api/activities/delete", async (req, res) => {
-    const { id, userId, accessToken } = req.body;
+    const { id, userId, accessToken, timeZone } = req.body;
     try {
-        const result = await tools.deleteActivity({ id }, { uid: userId, accessToken });
+        const result = await tools.deleteActivity({ id }, { uid: userId, accessToken, timeZone });
         res.json(result);
     } catch (err) {
         console.error("Delete error:", err);
@@ -200,13 +200,13 @@ User message:
 // --------------------
 app.post("/api/chat", async (req, res) => {
     try {
-        const { message, userId, accessToken } = req.body;
+        const { message, userId, accessToken, timeZone } = req.body;
         if (!message || !userId) {
             return res.status(400).json({ error: "message and userId required" });
         }
 
         const { intent, arguments: rawArgs, confidence } = await extractIntent(message);
-        console.log("INTENT:", intent, "ARGS:", JSON.stringify(rawArgs, null, 2));
+        console.log("INTENT:", intent, "ARGS:", JSON.stringify(rawArgs, null, 2), "TZ:", timeZone);
 
         if (!intent || confidence < 0.6) {
             return res.json({ reply: "I’m not sure what you want to do.", refreshNeeded: false });
@@ -215,7 +215,7 @@ app.post("/api/chat", async (req, res) => {
         let result = null;
         let refreshNeeded = false;
         let reply = "Done ✅";
-        const context = { uid: userId, accessToken };
+        const context = { uid: userId, accessToken, timeZone };
 
         switch (intent) {
             case "addActivity": {

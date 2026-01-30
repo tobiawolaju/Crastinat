@@ -21,11 +21,12 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
     const handleSendMessage = async (message) => {
         setIsProcessing(true);
         console.log(`Flow: Sending chat message to ${API_BASE_URL}/api/chat`);
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         try {
             const response = await fetch(`${API_BASE_URL}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message, userId: user.uid, accessToken })
+                body: JSON.stringify({ message, userId: user.uid, accessToken, timeZone })
             });
             const result = await response.json();
             console.log("Flow: AI Response received:", result);
@@ -43,6 +44,7 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
     const handleSaveActivity = async (updatedActivity) => {
         if (!user) return;
         console.log(`Flow: Saving activity update to ${API_BASE_URL}/api/activities/update`);
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/activities/update`, {
@@ -52,7 +54,8 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
                     id: updatedActivity.id,
                     updates: updatedActivity,
                     userId: user.uid,
-                    accessToken
+                    accessToken,
+                    timeZone
                 })
             });
 
@@ -73,6 +76,7 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
     const handleDeleteActivity = async (activityId) => {
         if (!user || !window.confirm("Are you sure?")) return;
         console.log(`Flow: Deleting activity via ${API_BASE_URL}/api/activities/delete`);
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/activities/delete`, {
@@ -81,7 +85,8 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
                 body: JSON.stringify({
                     id: activityId,
                     userId: user.uid,
-                    accessToken
+                    accessToken,
+                    timeZone
                 })
             });
             const result = await response.json();

@@ -8,17 +8,36 @@ function getCalendarClient(accessToken) {
     return google.calendar({ version: 'v3', auth });
 }
 
-// Helper: Convert HH:MM to ISO string for today
-function convertToISO(timeStr) {
+// Helper: Convert HH:MM to ISO string for today, respecting the user's timezone
+function convertToISO(timeStr, timeZone = 'UTC') {
     if (!timeStr) return undefined;
-    const now = new Date();
-    const [hours, minutes] = timeStr.split(':');
-    now.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
 
-    // Google Calendar needs RFC3339. toISOString() provides this in UTC.
-    // If we want to support user's local timezone, we'd need to offset it or use a library.
-    // For now, we'll keep UTC but ensure it's a valid string.
-    return now.toISOString();
+    // Get current date in the user's timezone
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
+    });
+
+    const parts = formatter.formatToParts(now);
+    const dateParts = {};
+    parts.forEach(({ type, value }) => { dateParts[type] = value; });
+
+    const [hours, minutes] = timeStr.split(':');
+
+    // Construct the date object correctly for that timezone
+    // Note: This is a robust way to handle "today at HH:mm" in a target timezone
+    const isoStr = `${dateParts.year}-${dateParts.month.padStart(2, '0')}-${dateParts.day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
+
+    // Google Calendar API will handle the offset if we provide the timeZone separately, 
+    // but the dateTime should be in a valid RFC3339 format (often just the local time works if TZ is specified).
+    return isoStr;
 }
 
 const tools = {
@@ -35,7 +54,7 @@ const tools = {
     },
 
     addActivity: async ({ title, startTime, endTime, description, location, attendees, tags, days }, context) => {
-        const { uid, accessToken } = context;
+        const { uid, accessToken, timeZone } = context;
         if (!uid) return { success: false, error: "User not authenticated" };
         if (!db) return { success: false, error: "Database not initialized. Check server config." };
 
@@ -75,12 +94,12 @@ const tools = {
                     location: location,
                     description: description,
                     start: {
-                        dateTime: convertToISO(startTime),
-                        timeZone: 'UTC',
+                        dateTime: convertToISO(startTime, timeZone),
+                        timeZone: timeZone || 'UTC',
                     },
                     end: {
-                        dateTime: convertToISO(endTime),
-                        timeZone: 'UTC',
+                        dateTime: convertToISO(endTime, timeZone),
+                        timeZone: timeZone || 'UTC',
                     },
                     attendees: (attendees || []).map(email => ({ email })),
                 };
@@ -113,7 +132,7 @@ const tools = {
     },
 
     updateActivity: async ({ id, ...updates }, context) => {
-        const { uid, accessToken } = context;
+        const { uid, accessToken, timeZone } = context;
         if (!uid) return { success: false, error: "User not authenticated" };
         if (!db) return { success: false, error: "Database not initialized. Check server config." };
 
@@ -140,8 +159,14 @@ const tools = {
                 if (updates.title) eventPatch.summary = updates.title;
                 if (updates.description) eventPatch.description = updates.description;
                 if (updates.location) eventPatch.location = updates.location;
-                if (updates.startTime) eventPatch.start = { dateTime: convertToISO(updatedActivity.startTime), timeZone: 'UTC' };
-                if (updates.endTime) eventPatch.end = { dateTime: convertToISO(updatedActivity.endTime), timeZone: 'UTC' };
+                if (updates.startTime) eventPatch.start = {
+                    dateTime: convertToISO(updatedActivity.startTime, timeZone),
+                    timeZone: timeZone || 'UTC'
+                };
+                if (updates.endTime) eventPatch.end = {
+                    dateTime: convertToISO(updatedActivity.endTime, timeZone),
+                    timeZone: timeZone || 'UTC'
+                };
 
                 await calendar.events.patch({
                     calendarId: 'primary',
