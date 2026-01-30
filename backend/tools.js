@@ -8,6 +8,24 @@ function getCalendarClient(accessToken) {
     return google.calendar({ version: 'v3', auth });
 }
 
+// Helper: Convert user-friendly days to Google Calendar RRULE
+function getRRULE(days) {
+    if (!days || days.length === 0) return null;
+
+    const dayMap = {
+        "Monday": "MO", "Tuesday": "TU", "Wednesday": "WE",
+        "Thursday": "TH", "Friday": "FR", "Saturday": "SA", "Sunday": "SU"
+    };
+
+    const byDay = days.map(d => dayMap[d]).filter(d => d).join(',');
+    if (!byDay) return null;
+
+    // If all 7 days are selected, FREQ=DAILY is cleaner, otherwise WEEKLY with specific days
+    const freq = days.length === 7 ? "DAILY" : "WEEKLY";
+    const rrule = `RRULE:FREQ=${freq}${freq === "WEEKLY" ? `;BYDAY=${byDay}` : ""}`;
+    return [rrule];
+}
+
 // Helper: Convert HH:MM to ISO string for today, respecting the user's timezone
 function convertToISO(timeStr, timeZone = 'UTC') {
     if (!timeStr) return undefined;
@@ -101,6 +119,7 @@ const tools = {
                         dateTime: convertToISO(endTime, timeZone),
                         timeZone: timeZone || 'UTC',
                     },
+                    recurrence: getRRULE(days),
                     attendees: (attendees || []).map(email => ({ email })),
                 };
 
@@ -167,6 +186,9 @@ const tools = {
                     dateTime: convertToISO(updatedActivity.endTime, timeZone),
                     timeZone: timeZone || 'UTC'
                 };
+                if (updates.days) {
+                    eventPatch.recurrence = getRRULE(updatedActivity.days);
+                }
 
                 await calendar.events.patch({
                     calendarId: 'primary',
