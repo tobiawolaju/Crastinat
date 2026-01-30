@@ -13,18 +13,28 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
+    // Dynamic API URL for local vs production testing
+    const API_BASE_URL = window.location.hostname === 'localhost'
+        ? 'http://localhost:3000'
+        : 'https://to-do-iun8.onrender.com';
+
     const handleSendMessage = async (message) => {
         setIsProcessing(true);
+        console.log(`Flow: Sending chat message to ${API_BASE_URL}/api/chat`);
         try {
-            const response = await fetch('https://to-do-iun8.onrender.com/api/chat', {
+            const response = await fetch(`${API_BASE_URL}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message, userId: user.uid, accessToken })
             });
             const result = await response.json();
-            console.log("AI Response:", result);
+            console.log("Flow: AI Response received:", result);
+
+            if (result.calendarError) {
+                console.warn("Flow: Google Calendar sync issues:", result.calendarError);
+            }
         } catch (error) {
-            console.error("Chat error:", error);
+            console.error("Flow: Chat error:", error);
         } finally {
             setIsProcessing(false);
         }
@@ -32,9 +42,10 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
 
     const handleSaveActivity = async (updatedActivity) => {
         if (!user) return;
+        console.log(`Flow: Saving activity update to ${API_BASE_URL}/api/activities/update`);
 
         try {
-            const response = await fetch('https://to-do-iun8.onrender.com/api/activities/update', {
+            const response = await fetch(`${API_BASE_URL}/api/activities/update`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -50,18 +61,21 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
                 throw new Error(errorData.error || "Failed to update activity");
             }
 
+            const result = await response.json();
+            console.log("Flow: Save result:", result);
             return true;
         } catch (error) {
-            console.error("Save error:", error);
+            console.error("Flow: Save error:", error);
             throw error;
         }
     };
 
     const handleDeleteActivity = async (activityId) => {
         if (!user || !window.confirm("Are you sure?")) return;
+        console.log(`Flow: Deleting activity via ${API_BASE_URL}/api/activities/delete`);
 
         try {
-            await fetch('https://to-do-iun8.onrender.com/api/activities/delete', {
+            const response = await fetch(`${API_BASE_URL}/api/activities/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -70,8 +84,10 @@ export default function Dashboard({ user, onLogout, accessToken, onNavigateToPro
                     accessToken
                 })
             });
+            const result = await response.json();
+            console.log("Flow: Delete result:", result);
         } catch (error) {
-            console.error("Delete error:", error);
+            console.error("Flow: Delete error:", error);
         }
 
         setSelectedActivity(null);
