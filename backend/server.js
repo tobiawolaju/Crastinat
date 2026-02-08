@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const crypto = require('crypto');
 const tools = require('./tools');
 
 // --------------------
@@ -322,6 +323,30 @@ app.post("/api/predict-future", async (req, res) => {
             });
         }
 
+        // 3. Compute Content Hash for Staleness Check
+        // Sort schedule by ID to ensure consistent ordering
+        const sortedSchedule = [...schedule].sort((a, b) => (a.id || 0) - (b.id || 0));
+
+        // Create deterministic string representation
+        const contentToHash = JSON.stringify({
+            schedule: sortedSchedule.map(a => ({
+                id: a.id, title: a.title, days: a.days, startTime: a.start, endTime: a.end
+            })),
+            chat: chatHistory.map(m => ({ role: m.role, content: m.content }))
+        });
+
+        const currentHash = crypto.createHash('sha256').update(contentToHash).digest('hex');
+        const storedHash = existingFutures?.hash;
+
+        console.log(`Futures Hash Check [${userId}]: Current=${currentHash.substring(0, 8)} Stored=${storedHash ? storedHash.substring(0, 8) : 'None'}`);
+
+        if (storedHash === currentHash && existingFutures && existingFutures.data) {
+            console.log(`Returning cached futures (Hash Match)`);
+            return res.json({ futures: existingFutures.data });
+        }
+
+        console.log(`Regenerating futures (Hash Mismatch)`);
+
         // 3. Construct Prompt
         const scheduleText = JSON.stringify(schedule.map(a => ({ title: a.title, days: a.days, startTime: a.start, endTime: a.end })));
         const chatText = chatHistory.map(m => `${m.role}: ${m.content}`).join("\n");
@@ -362,8 +387,8 @@ app.post("/api/predict-future", async (req, res) => {
             const jsonText = text.replace(/```json/g, "").replace(/```/g, "").trim();
             const futures = JSON.parse(jsonText);
 
-            // 5. Store in Firebase
-            await tools.saveUserFutures(userId, futures);
+            // 5. Store in Firebase with Hash
+            await tools.saveUserFutures(userId, futures, currentHash);
 
             res.json({ futures });
 

@@ -400,12 +400,13 @@ const tools = {
         }
     },
 
-    saveUserFutures: async (uid, futures) => {
+    saveUserFutures: async (uid, futures, hash) => {
         if (!uid) return { success: false, error: "No user ID" };
         try {
             const ref = db.ref(`users/${uid}/futures`);
             await ref.set({
                 data: futures,
+                hash: hash || null,
                 lastUpdated: Date.now()
             });
             return { success: true };
