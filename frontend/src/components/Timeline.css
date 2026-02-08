@@ -20,7 +20,7 @@
     display: flex;
     position: sticky;
     top: 0;
-    background: rgba(26, 26, 26, 0.95);
+    background: var(--bg-glass);
     backdrop-filter: blur(8px);
     z-index: 40;
     border-bottom: 1px solid var(--border-visible);
@@ -63,7 +63,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     background: var(--accent-tertiary);
-    color: #000;
+    color: var(--bg-void);
     padding: 2px 4px;
     border-radius: 0px;
     font-weight: 700;

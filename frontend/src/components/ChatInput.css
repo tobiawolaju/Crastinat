@@ -19,13 +19,13 @@
 }
 
 .chat-input-container:focus-within {
-    border-color: #fff;
+    border-color: var(--text-primary);
 }
 
 #chat-input {
     background: transparent;
     border: none;
-    color: #fff;
+    color: var(--text-primary);
     font-family: var(--font-body);
     font-size: 16px;
     flex: 1;
@@ -45,8 +45,8 @@
 }
 
 .action-btn {
-    background: #fff;
-    color: #000;
+    background: var(--btn-bg);
+    color: var(--btn-text);
     border-radius: 0px !important;
     height: 44px;
     width: 44px;
@@ -60,6 +60,6 @@
 }
 
 .action-btn:hover {
-    background: #e4e4e7;
-    color: #000;
+    background: var(--btn-hover);
+    color: var(--btn-text);
 }

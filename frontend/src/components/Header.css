@@ -5,8 +5,7 @@ header {
     justify-content: space-between;
     padding: 0 24px;
     z-index: 50;
-    background: rgba(26, 26, 26, 0.9);
-    /* Opaque enough */
+    background: var(--bg-glass);
     backdrop-filter: var(--backdrop-blur);
     border-bottom: 1px solid var(--border-visible);
 }
@@ -19,7 +18,7 @@ header {
 .header-main h1 {
     font-size: 20px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-primary);
     text-shadow: none;
 }
 

@@ -33,7 +33,7 @@
     padding: 40px 32px;
     height: 100%;
     overflow-y: auto;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .detail-header {
@@ -46,7 +46,7 @@
     font-weight: 700;
     line-height: 1.1;
     margin-bottom: 16px;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .detail-label {
@@ -60,7 +60,7 @@
 
 .detail-value {
     font-size: 16px;
-    color: #fff;
+    color: var(--text-primary);
     margin-bottom: 24px;
 }
 
@@ -79,9 +79,9 @@
 }
 
 .tag-chip {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
+    background: var(--bg-block);
+    border: 1px solid var(--border-visible);
+    color: var(--text-primary);
     font-size: 14px;
     padding: 6px 12px;
     border-radius: 0px;
@@ -106,9 +106,9 @@ input[type="text"],
 input[type="time"],
 textarea {
     width: 100%;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-block);
     border: 1px solid var(--border-visible);
-    color: #fff;
+    color: var(--text-primary);
     padding: 14px;
     border-radius: 0px;
     /* Flat */
@@ -120,8 +120,8 @@ textarea {
 
 input:focus,
 textarea:focus {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--text-primary);
+    background: var(--bg-elevated);
 }
 
 @media (min-width: 769px) {
