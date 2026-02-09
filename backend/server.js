@@ -330,7 +330,7 @@ app.post("/api/predict-future", async (req, res) => {
         // Create deterministic string representation
         const contentToHash = JSON.stringify({
             schedule: sortedSchedule.map(a => ({
-                id: a.id, title: a.title, days: a.days, startTime: a.startTime, endTime: a.endTime
+                id: a.id, title: a.title, days: a.days, startTime: a.start, endTime: a.end
             })),
             chat: chatHistory.map(m => ({ role: m.role, content: m.content }))
         });
@@ -348,7 +348,7 @@ app.post("/api/predict-future", async (req, res) => {
         console.log(`Regenerating futures (Hash Mismatch)`);
 
         // 3. Construct Prompt
-        const scheduleText = JSON.stringify(schedule.map(a => ({ title: a.title, days: a.days, startTime: a.startTime, endTime: a.endTime })));
+        const scheduleText = JSON.stringify(schedule.map(a => ({ title: a.title, days: a.days, startTime: a.start, endTime: a.end })));
         const chatText = chatHistory.map(m => `${m.role}: ${m.content}`).join("\n");
 
         const prompt = `
@@ -431,7 +431,7 @@ app.post("/api/check-futures-status", async (req, res) => {
         const sortedSchedule = [...schedule].sort((a, b) => (a.id || 0) - (b.id || 0));
         const contentToHash = JSON.stringify({
             schedule: sortedSchedule.map(a => ({
-                id: a.id, title: a.title, days: a.days, startTime: a.startTime, endTime: a.endTime
+                id: a.id, title: a.title, days: a.days, startTime: a.start, endTime: a.end
             })),
             chat: chatHistory.map(m => ({ role: m.role, content: m.content }))
         });
