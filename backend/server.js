@@ -14,12 +14,23 @@ const fs = require('fs');
 const projectId = process.env.VERTEX_AI_PROJECT_ID;
 const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
 
-// Match service account path logic from firebase-config.js
+// --------------------
+// Health Check and Error Handling
+// --------------------
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+
+// Authentication Logic for Vertex AI / Firebase
 const serviceAccountPath = process.env.RENDER
     ? '/etc/secrets/serviceAccountKey.json'
     : path.join(__dirname, 'serviceAccountKey.json');
 
-// If we have a local service account file, set it for the Cloud SDKs to find
 if (fs.existsSync(serviceAccountPath)) {
     process.env.GOOGLE_APPLICATION_CREDENTIALS = serviceAccountPath;
 }
@@ -42,6 +53,9 @@ async function generateContent(prompt) {
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Health Check
+app.get("/", (req, res) => res.status(200).send("IF·THEN Backend is alive."));
 
 // --------------------
 // Activity Management Routes (Direct)
