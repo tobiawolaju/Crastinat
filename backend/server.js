@@ -11,7 +11,7 @@ const tools = require('./tools');
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // Switching to gemini-1.5-flash which is generally available and stable.
 // 'gemini-flash-latest' was causing 400 Bad Request errors due to regional/availability issues.
-const model = genAI.getGenerativeModel({ model: "gemini-3-pro-preview" });
+const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
 // --------------------
 // Express App
