@@ -10,12 +10,12 @@ const tools = require('./tools');
 // --------------------
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Using gemini-1.5-flash for speed and cost efficiency
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+// Using gemini-flash-latest per user request
+const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
 // Helper function to generate content using Google AI Studio
 async function generateContent(prompt) {
-    console.log(`[Gemini API] Generating content with model: gemini-1.5-flash`);
+    console.log(`[Gemini API] Generating content with model: gemini-flash-latest`);
     const result = await model.generateContent(prompt);
     return result;
 }
@@ -647,6 +647,6 @@ app.get("/api/debug", async (_, res) => {
 // Start Server
 // --------------------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running at http://0.0.0.0:${PORT}`);
 });
